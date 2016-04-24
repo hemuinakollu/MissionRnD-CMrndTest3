@@ -94,7 +94,7 @@ int getOperand(char *data){
 int solve_tree_helper(struct enode *root)
 {
 
-	if (!(isOperator(root->left->data) && isOperator(root->right->data)))
+	if (!(isOperator(root->left->data) || isOperator(root->right->data)))
 	{
 		if (root->data[0] == '*')
 		{
