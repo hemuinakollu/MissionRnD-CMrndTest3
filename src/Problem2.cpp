@@ -70,7 +70,60 @@ struct node{
 	struct node *left;
 	struct node *right;
 };
+int i = 0;
+void ino1(struct node *root, int *arr, int *i)
+{
+	if (root != NULL)
+	{
+		ino1(root->left, arr, i);
+		arr[*i] = root->data;
+		(*i)++;
+		ino1(root->right, arr, i);
+	}
+	else
+		return;
 
+}
+void inorder1(struct node *root, int *arr){
+	if (root == NULL || arr == NULL)
+	{
+		return;
+	}
+	
+	ino1(root, arr, &i);//passing &i as call by reference to update the i value
+
+
+}
 int is_identical(struct node_dll *head, struct node *root){
-	return -1;
+	if (head==NULL||root==NULL)
+		return -1;
+	else
+	{
+		int *arr = (int*)malloc(1000*sizeof(int));
+		inorder1(root, arr);
+		struct node_dll *iter = head;
+		int l = 0;
+		while (iter != NULL && l<i)
+		{
+			if (iter->data != arr[l])
+			{
+				delete arr;
+				return 0;
+			}
+			l++;
+			iter = iter->next;
+		}
+		if (l<i || iter != NULL)
+		{
+			delete arr;
+			return 0;
+			
+		}
+		else
+		{
+			delete arr;
+			return 1;
+		}
+	}
+
 }

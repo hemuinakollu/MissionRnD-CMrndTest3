@@ -51,6 +51,34 @@ struct node{
 };
 
 
-int get_missing_value(struct node *root,int n){
-    return -1;
+int get_missing_value_helper(struct node *root)
+{
+	if (root == NULL)
+		return 0;
+	{
+		return root->data + get_missing_value_helper(root->right) + get_missing_value_helper(root->left);
+	}
+
+}
+
+int get_missing_value(struct node *root, int n){
+	if (root == NULL || n == 0)
+		return -1;
+	else
+	{
+		int flag = 0;
+		if (n < 0)
+		{
+			n = n*-1;
+			flag = -1;
+
+		}
+		int original_sum = n*(n + 1) / 2;
+
+
+		if (flag == -1)
+			return (-1 * (original_sum + get_missing_value_helper(root)));
+		else
+			return original_sum - get_missing_value_helper(root);
+	}
 }

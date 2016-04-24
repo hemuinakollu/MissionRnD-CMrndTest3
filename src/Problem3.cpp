@@ -51,7 +51,6 @@ Difficulty : Medium
 #include <stdlib.h>;
 #include <stdio.h>
 
-//data can be accessed using root->data;
 struct enode{
 	char data[6];
 	struct enode *left;
@@ -59,21 +58,113 @@ struct enode{
 };
 
 /*
-Helper Functions are optional to write 
+Helper Functions are optional to write
 */
 //Helper Functions Start
 int isOperator(char *data){
-	return 0;
+	if ((data[0] == '*' || data[0] == '-' || data[0] == '+') && (data[1] == '\0'))
+		return 1;
+	else{
+		return 0;
+	}
 }
-int isOperand(char *data){
-	return 0;
-}
+
 int getOperand(char *data){
 	//converts data string to an integer "123" => 123
-	return 0;
+
+	int x = 0;
+	int i = 0;
+	int flag = 0;
+	if (data[0] == '-')
+	{
+		i++;
+		flag = -1;
+	}
+	while (data[i] != '\0')
+	{
+		x = x * 10;
+		x = x + (((int)data[i] - 48));
+		i++;
+	}
+	if (flag == -1)
+		x = -1 * x;
+	return x;
 }
 //Helper Functions end
-int solve_tree(struct enode *root){
-    return -1;
+int solve_tree_helper(struct enode *root)
+{
+
+	if (!(isOperator(root->left->data) && isOperator(root->right->data)))
+	{
+		if (root->data[0] == '*')
+		{
+			return getOperand(root->left->data) * getOperand(root->right->data);
+		}
+		else if (root->data[0] == '+')
+		{
+			return getOperand(root->left->data) + getOperand(root->right->data);
+		}
+		else
+		{
+			return getOperand(root->left->data) - getOperand(root->right->data);
+		}
+	}
+	else if (!isOperator(root->left->data))
+	{
+		if (root->data[0] == '*')
+		{
+			return getOperand(root->left->data) * solve_tree_helper(root->right);
+		}
+		else if (root->data[0] == '+')
+		{
+			return getOperand(root->left->data) + solve_tree_helper(root->right);
+		}
+		else
+		{
+			return getOperand(root->left->data) - solve_tree_helper(root->right);
+		}
+	}
+	else if (!isOperator(root->right->data))
+	{
+		if (root->data[0] == '*')
+		{
+			return solve_tree_helper(root->left) * getOperand(root->right->data);
+		}
+		else if (root->data[0] == '+')
+		{
+			return solve_tree_helper(root->left) + getOperand(root->right->data);
+		}
+		else
+		{
+			return solve_tree_helper(root->left) - getOperand(root->right->data);
+		}
+	}
+	else
+	{
+		if (root->data[0] == '*')
+		{
+			return solve_tree_helper(root->left) * solve_tree_helper(root->right);
+		}
+		else if (root->data[0] == '+')
+		{
+			return solve_tree_helper(root->left) + solve_tree_helper(root->right);
+		}
+		else
+		{
+			return solve_tree_helper(root->left) - solve_tree_helper(root->right);
+		}
+	}
 }
+int solve_tree(struct enode *root){
+	if (root == NULL)
+		return -1;
+	else
+	{
+		return solve_tree_helper(root);
+	}
+}
+
+
+
+
 
